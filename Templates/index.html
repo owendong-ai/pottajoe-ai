@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>PottaJoe AI 咖啡推薦</title>
+    
+<style>
+<h1>
+    <img src="{{ url_for('static', filename='images/logo_coffee.png') }}"
+         alt="PottaJoe Logo"
+         style="height:60px; vertical-align:middle; margin-right:12px;">
+    PottaJoe AI 咖啡推薦系統
+</h1>    
+body {
+    font-family: "Segoe UI", Arial;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f1eb, #e8ded3);
+}
+
+h1 {
+    text-align: center;
+    color: #5a3e2b;
+    font-size: 36px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+
+button {
+    padding: 12px 18px;
+    margin: 8px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #6f4e37, #8b5e3c);
+    color: white;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.prefs {
+    font-size: 18px;
+    line-height: 2;
+}
+
+a {
+    color: #6f4e37;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+    <h1>☕ PottaJoe AI 咖啡推薦系統</h1>
+
+    <div class="card">
+        <h2>請選擇你喜歡的口味</h2>
+        <form method="post" action="/recommend">
+            <button type="submit" name="choice" value="1">1. 濃郁</button>
+            <button type="submit" name="choice" value="2">2. 果香</button>
+            <button type="submit" name="choice" value="3">3. 堅果</button>
+            <button type="submit" name="choice" value="4">4. 花香</button>
+            <button type="submit" name="choice" value="5">5. 再推薦一個</button>
+            <button type="submit" name="choice" value="6">6. AI 幫我推薦</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>目前 AI 學到的偏好分數</h2>
+        <div class="prefs">
+            濃郁：{{ preferences["濃郁"] }}<br>
+            果香：{{ preferences["果香"] }}<br>
+            堅果：{{ preferences["堅果"] }}<br>
+            花香：{{ preferences["花香"] }}
+        </div>
+    </div>
+
+    <a href="/reset">重設本次推薦紀錄</a>
+</body>
+</html>

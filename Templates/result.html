@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>推薦結果</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f1eb, #e8ded3);
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .coffee-card {
+            width: 300px;
+        }
+
+        .coffee-image {
+            width: 100%;
+            border-radius: 14px;
+            display: block;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+        }
+
+        h1, h2 {
+            color: #5a3e2b;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        button {
+            padding: 12px 18px;
+            margin: 8px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6f4e37, #8b5e3c);
+            color: white;
+            font-size: 16px;
+        }
+
+        a {
+            color: #6f4e37;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% if coffee %}
+        <div class="card">
+            <h1>☕ 推薦給你的咖啡</h1>
+
+            <img
+                class="coffee-image"
+                src="{{ url_for('static', filename=coffee['image']) }}"
+                alt="{{ coffee['name'] }}"
+            >
+
+            <p><strong>名稱：</strong>{{ coffee["name"] }}</p>
+            <p><strong>風味：</strong>{{ coffee["flavor"] }}</p>
+            <p><strong>介紹：</strong>{{ coffee["description"] }}</p>
+
+            <h2>你覺得這款咖啡如何？</h2>
+            <form method="post" action="/feedback">
+                <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
+                <button type="submit" name="feedback" value="喜歡">👍 喜歡</button>
+                <button type="submit" name="feedback" value="不喜歡">👎 不喜歡</button>
+                <button type="submit" name="feedback" value="略過">⏭ 略過</button>
+            </form>
+        </div>
+    {% elif coffees %}
+        <h1>☕ AI 推薦給你的咖啡</h1>
+
+        <div class="cards">
+            {% for coffee in coffees %}
+            <div class="card coffee-card">
+                <img
+                    class="coffee-image"
+                    src="{{ url_for('static', filename=coffee['image']) }}"
+                    alt="{{ coffee['name'] }}"
+                >
+
+                <p><strong>{{ coffee["name"] }}</strong></p>
+                <p><strong>風味：</strong>{{ coffee["flavor"] }}</p>
+                <p>{{ coffee["description"] }}</p>
+
+                <form method="post" action="/feedback">
+                    <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
+                    <button type="submit" name="feedback" value="喜歡">👍 喜歡</button>
+                    <button type="submit" name="feedback" value="不喜歡">👎 不喜歡</button>
+                    <button type="submit" name="feedback" value="略過">⏭ 略過</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <h1>{{ message }}</h1>
+        </div>
+    {% endif %}
+
+    <a href="/">回首頁</a>
+</body>
+</html>
