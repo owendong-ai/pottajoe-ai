@@ -2,122 +2,273 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>推薦結果</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             font-family: "Segoe UI", Arial, sans-serif;
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #f5f1eb, #e8ded3);
+            background: linear-gradient(180deg, #f5f1eb 0%, #ebe3d8 100%);
+            color: #3e2a1f;
         }
 
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 18px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
+        .page-wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 36px 20px 50px;
         }
 
-        .cards {
+        .page-title {
+            margin: 0 0 28px;
+            font-size: 44px;
+            font-weight: 800;
+            color: #5a3e2b;
+        }
+
+        .single-card,
+        .coffee-card {
+            background: rgba(255, 255, 255, 0.84);
+            border-radius: 26px;
+            box-shadow: 0 14px 34px rgba(72, 43, 24, 0.10);
+            overflow: hidden;
+        }
+
+        .single-card {
+            max-width: 920px;
+            margin: 0 auto 24px;
+        }
+
+        .single-image-wrap,
+        .card-image-wrap {
+            background: linear-gradient(135deg, #f7efe6, #eadccd);
+            padding: 24px;
+        }
+
+        .single-image {
+            width: 100%;
+            max-height: 620px;
+            object-fit: cover;
+            border-radius: 20px;
+            display: block;
+        }
+
+        .single-content {
+            padding: 28px 30px 34px;
+        }
+
+        .label {
+            display: inline-block;
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: #8b684f;
+            background: #f6eee6;
+            padding: 8px 12px;
+            border-radius: 999px;
+            margin-bottom: 18px;
+        }
+
+        .coffee-name {
+            margin: 0 0 16px;
+            font-size: 38px;
+            color: #4d3323;
+        }
+
+        .meta {
+            margin: 0 0 12px;
+            font-size: 21px;
+            line-height: 1.8;
+        }
+
+        .meta strong {
+            color: #5f3e2b;
+        }
+
+        .feedback-title {
+            margin: 28px 0 14px;
+            font-size: 30px;
+            color: #5a3e2b;
+        }
+
+        .feedback-row {
             display: flex;
-            gap: 20px;
+            gap: 14px;
             flex-wrap: wrap;
         }
 
+        .feedback-btn {
+            border: none;
+            border-radius: 16px;
+            padding: 14px 24px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6f4e37, #94694b);
+            color: white;
+            box-shadow: 0 10px 18px rgba(111, 78, 55, 0.20);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+        }
+
+        .feedback-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 24px rgba(111, 78, 55, 0.26);
+            opacity: 0.97;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 26px;
+        }
+
         .coffee-card {
-            width: 300px;
+            display: flex;
+            flex-direction: column;
         }
 
         .coffee-image {
             width: 100%;
-            border-radius: 14px;
+            height: 360px;
+            object-fit: cover;
+            border-radius: 20px;
             display: block;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
         }
 
-        h1, h2 {
+        .card-content {
+            padding: 22px 22px 26px;
+        }
+
+        .card-name {
+            margin: 0 0 14px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #4d3323;
+        }
+
+        .card-text {
+            margin: 0 0 10px;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #6f4e37;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .message-card {
+            background: rgba(255, 255, 255, 0.84);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 14px 34px rgba(72, 43, 24, 0.10);
+            font-size: 28px;
             color: #5a3e2b;
         }
 
-        p {
-            font-size: 18px;
-            line-height: 1.8;
-        }
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 34px;
+            }
 
-        button {
-            padding: 12px 18px;
-            margin: 8px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            background: linear-gradient(135deg, #6f4e37, #8b5e3c);
-            color: white;
-            font-size: 16px;
-        }
+            .coffee-name {
+                font-size: 28px;
+            }
 
-        a {
-            color: #6f4e37;
-            font-weight: bold;
+            .feedback-title {
+                font-size: 24px;
+            }
+
+            .feedback-btn {
+                width: 100%;
+            }
+
+            .coffee-image {
+                height: 280px;
+            }
         }
     </style>
 </head>
 <body>
-    {% if coffee %}
-        <div class="card">
-            <h1>☕ 推薦給你的咖啡</h1>
+    <div class="page-wrap">
+        {% if coffee %}
+            <h1 class="page-title">☕ 推薦給你的咖啡</h1>
 
-            <img
-                class="coffee-image"
-                src="{{ url_for('static', filename=coffee['image']) }}"
-                alt="{{ coffee['name'] }}"
-            >
+            <div class="single-card">
+                <div class="single-image-wrap">
+                    <img
+                        class="single-image"
+                        src="{{ url_for('static', filename=coffee['image']) }}"
+                        alt="{{ coffee['name'] }}"
+                    >
+                </div>
 
-            <p><strong>名稱：</strong>{{ coffee["name"] }}</p>
-            <p><strong>風味：</strong>{{ coffee["flavor"] }}</p>
-            <p><strong>介紹：</strong>{{ coffee["description"] }}</p>
+                <div class="single-content">
+                    <div class="label">AI 精選推薦</div>
+                    <h2 class="coffee-name">{{ coffee["name"] }}</h2>
+                    <p class="meta"><strong>風味：</strong>{{ coffee["flavor"] }}</p>
+                    <p class="meta"><strong>介紹：</strong>{{ coffee["description"] }}</p>
 
-            <h2>你覺得這款咖啡如何？</h2>
-            <form method="post" action="/feedback">
-                <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
-                <button type="submit" name="feedback" value="喜歡">👍 喜歡</button>
-                <button type="submit" name="feedback" value="不喜歡">👎 不喜歡</button>
-                <button type="submit" name="feedback" value="略過">⏭ 略過</button>
-            </form>
-        </div>
-    {% elif coffees %}
-        <h1>☕ AI 推薦給你的咖啡</h1>
-
-        <div class="cards">
-            {% for coffee in coffees %}
-            <div class="card coffee-card">
-                <img
-                    class="coffee-image"
-                    src="{{ url_for('static', filename=coffee['image']) }}"
-                    alt="{{ coffee['name'] }}"
-                >
-
-                <p><strong>{{ coffee["name"] }}</strong></p>
-                <p><strong>風味：</strong>{{ coffee["flavor"] }}</p>
-                <p>{{ coffee["description"] }}</p>
-
-                <form method="post" action="/feedback">
-                    <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
-                    <button type="submit" name="feedback" value="喜歡">👍 喜歡</button>
-                    <button type="submit" name="feedback" value="不喜歡">👎 不喜歡</button>
-                    <button type="submit" name="feedback" value="略過">⏭ 略過</button>
-                </form>
+                    <h3 class="feedback-title">你覺得這款咖啡如何？</h3>
+                    <form method="post" action="/feedback">
+                        <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
+                        <div class="feedback-row">
+                            <button class="feedback-btn" type="submit" name="feedback" value="喜歡">👍 喜歡</button>
+                            <button class="feedback-btn" type="submit" name="feedback" value="不喜歡">👎 不喜歡</button>
+                            <button class="feedback-btn" type="submit" name="feedback" value="略過">⏭ 略過</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="card">
-            <h1>{{ message }}</h1>
-        </div>
-    {% endif %}
 
-    <a href="/">回首頁</a>
+        {% elif coffees %}
+            <h1 class="page-title">☕ AI 推薦給你的咖啡</h1>
+
+            <div class="cards-grid">
+                {% for coffee in coffees %}
+                <div class="coffee-card">
+                    <div class="card-image-wrap">
+                        <img
+                            class="coffee-image"
+                            src="{{ url_for('static', filename=coffee['image']) }}"
+                            alt="{{ coffee['name'] }}"
+                        >
+                    </div>
+
+                    <div class="card-content">
+                        <div class="label">推薦候選</div>
+                        <h2 class="card-name">{{ coffee["name"] }}</h2>
+                        <p class="card-text"><strong>風味：</strong>{{ coffee["flavor"] }}</p>
+                        <p class="card-text">{{ coffee["description"] }}</p>
+
+                        <form method="post" action="/feedback">
+                            <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
+                            <div class="feedback-row">
+                                <button class="feedback-btn" name="feedback" value="喜歡">👍 喜歡</button>
+                                <button class="feedback-btn" name="feedback" value="不喜歡">👎 不喜歡</button>
+                                <button class="feedback-btn" name="feedback" value="略過">⏭ 略過</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="message-card">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <a class="back-link" href="/">← 回首頁</a>
+    </div>
 </body>
 </html>
