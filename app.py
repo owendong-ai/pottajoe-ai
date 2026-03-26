@@ -90,7 +90,7 @@ for coffee, score, reasons in scored_coffees:
         coffee_copy["reason"] = reasons
         results.append(coffee_copy)
 
-    return result
+    return results[:3]
 
 
 def update_preferences(preferences, flavor, feedback):
