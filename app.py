@@ -1,3 +1,5 @@
+from unittest import result
+
 from coffee_data import coffees
 
 def recommend_coffee_by_flavor(user_flavor, excluded_names=None):
@@ -88,7 +90,7 @@ for coffee, score, reasons in scored_coffees:
         coffee_copy["reason"] = reasons
         results.append(coffee_copy)
 
-    return results
+    return result
 
 
 def update_preferences(preferences, flavor, feedback):
