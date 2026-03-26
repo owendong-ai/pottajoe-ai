@@ -18,31 +18,18 @@ def recommend_coffee_by_flavor(user_flavor, excluded_names=None):
 
 
 def calculate_coffee_score(coffee, preferences, recent_feedback=None, excluded_names=None):
-    if recent_feedback is None:
-        recent_feedback = []
-
-    if excluded_names is None:
-        excluded_names = []
-
     score = 0
+    reasons = []
 
-    # 1. 基礎分數：來自使用者對該風味的偏好
-    flavor = coffee["flavor"]
-    score += preferences.get(flavor, 0)
+    if coffee["flavor"] in preferences:
+        score += 3
+        reasons.append(f"符合你喜歡的「{coffee['flavor']}」")
 
-    # 2. 如果這杯最近已推薦過，降低分數
-    if coffee["name"] in excluded_names:
-        score -= 100
+    if recent_feedback:
+        score += 1
+        reasons.append("根據你最近的選擇調整")
 
-    # 3. 根據最近回饋再微調
-    for item in recent_feedback:
-        if item["flavor"] == flavor:
-            if item["feedback"] == "喜歡":
-                score += 2
-            elif item["feedback"] == "不喜歡":
-                score -= 2
-
-    return score
+    return score, reasons   # ⭐⭐⭐ 重點在這
 
 def get_recommend_reason(coffee, preferences, recent_feedback):
     flavor = coffee["flavor"]
