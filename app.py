@@ -63,13 +63,7 @@ def get_recommend_reason(coffee, preferences, recent_feedback):
 
     return f"推薦你嘗試「{flavor}」風味"
 
-def recommend_top3(preferences, recent_feedback=None, excluded_names=None):
-    if recent_feedback is None:
-        recent_feedback = []
-
-    if excluded_names is None:
-        excluded_names = []
-
+def recommend_coffee(coffees, preferences, recent_feedback, excluded_names):
     scored_coffees = []
 
     for coffee in coffees:
@@ -79,18 +73,21 @@ def recommend_top3(preferences, recent_feedback=None, excluded_names=None):
             recent_feedback=recent_feedback,
             excluded_names=excluded_names
         )
+
         scored_coffees.append((coffee, score, reasons))
 
+    # 排序（很重要🔥）
     scored_coffees.sort(key=lambda x: x[1], reverse=True)
 
     results = []
+
     for coffee, score, reasons in scored_coffees:
         if coffee["name"] not in excluded_names:
             coffee_copy = coffee.copy()
             coffee_copy["reason"] = reasons
             results.append(coffee_copy)
 
-    return results[:3]
+    return results[:3]   # ✅ 一定要在這裡
 
 
 def update_preferences(preferences, flavor, feedback):
