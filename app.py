@@ -84,11 +84,11 @@ def recommend_top3(preferences, recent_feedback=None, excluded_names=None):
     scored_coffees.sort(key=lambda x: x[1], reverse=True)
 
     results = []
-for coffee, score, reasons in scored_coffees:
-    if coffee["name"] not in excluded_names:
-        coffee_copy = coffee.copy()
-        coffee_copy["reason"] = reasons
-        results.append(coffee_copy)
+    for coffee, score, reasons in scored_coffees:
+        if coffee["name"] not in excluded_names:
+            coffee_copy = coffee.copy()
+            coffee_copy["reason"] = reasons
+            results.append(coffee_copy)
 
     return results[:3]
 
