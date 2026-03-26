@@ -32,7 +32,7 @@ def recommend():
 
     recommended_names = session["recommended_names"]
     if "recent_feedback" not in session:
-    session["recent_feedback"] = []
+        session["recent_feedback"] = []
 
     recent_feedback = session["recent_feedback"]
 
