@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from app import get_recommend_reason, recommend_coffee_by_flavor, recommend_top3, update_preferences
+from app import get_recommend_reason, recommend_coffee, recommend_coffee_by_flavor, recommend_top3, update_preferences
 from user_data import load_preferences, save_preferences
 
 app = Flask(__name__)
@@ -77,7 +77,8 @@ def recommend():
                 )
 
     elif choice == "6":
-        coffees = recommend_top3(
+        coffees = recommend_coffee(
+            coffees,
             preferences,
             recent_feedback=recent_feedback,
             excluded_names=recommended_names
