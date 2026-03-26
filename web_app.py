@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from app import recommend_coffee_by_flavor, recommend_top3, update_preferences
+from app import get_recommend_reason, recommend_coffee_by_flavor, recommend_top3, update_preferences
 from user_data import load_preferences, save_preferences
 
 app = Flask(__name__)
@@ -9,6 +9,13 @@ app.secret_key = "pottajoe_secret_key"
 @app.route("/")
 def home():
     preferences = load_preferences()
+
+    if "recommended_names" not in session:
+        session["recommended_names"] = []
+
+    if "recent_feedback" not in session:
+        session["recent_feedback"] = []
+
     return render_template("index.html", preferences=preferences)
 
 
@@ -20,7 +27,14 @@ def recommend():
     if "recommended_names" not in session:
         session["recommended_names"] = []
 
+    if "recent_feedback" not in session:
+        session["recent_feedback"] = []
+
     recommended_names = session["recommended_names"]
+    if "recent_feedback" not in session:
+    session["recent_feedback"] = []
+
+    recent_feedback = session["recent_feedback"]
 
     flavor_map = {
         "1": "濃郁",
@@ -29,7 +43,6 @@ def recommend():
         "4": "花香"
     }
 
-    # 先處理一般單一推薦
     if choice in flavor_map:
         flavor = flavor_map[choice]
         session["last_flavor"] = flavor
@@ -47,7 +60,6 @@ def recommend():
                 preferences=preferences
             )
 
-    # 再推薦一個
     elif choice == "5":
         last_flavor = session.get("last_flavor")
         if last_flavor:
@@ -64,9 +76,13 @@ def recommend():
                     preferences=preferences
                 )
 
-    # AI 幫我推薦：一次推薦 Top 3
     elif choice == "6":
-        coffees = recommend_top3(preferences, recommended_names)
+        coffees = recommend_top3(
+            preferences,
+            recent_feedback=recent_feedback,
+            excluded_names=recommended_names
+        )
+        from app import get_recommend_reason
         if coffees:
             session["current_coffees"] = coffees
             session["current_coffee"] = None
@@ -100,24 +116,37 @@ def feedback():
 
     preferences = load_preferences()
 
+    if "recent_feedback" not in session:
+        session["recent_feedback"] = []
+
+    recent_feedback = session["recent_feedback"]
+
     if flavor and feedback_value in ["喜歡", "不喜歡", "略過"]:
         update_preferences(preferences, flavor, feedback_value)
         save_preferences(preferences)
 
+        recent_feedback.append({
+            "flavor": flavor,
+            "feedback": feedback_value
+        })
+
+        # 只保留最近 10 筆
+        session["recent_feedback"] = recent_feedback[-10:]
+
     return redirect(url_for("recommend_after_feedback"))
 
-
-@app.route("/reset")
-def reset():
-    session.clear()
-    return redirect(url_for("home"))
 
 @app.route("/recommend_after_feedback")
 def recommend_after_feedback():
     preferences = load_preferences()
     recommended_names = session.get("recommended_names", [])
+    recent_feedback = session.get("recent_feedback", [])
 
-    coffees = recommend_top3(preferences, recommended_names)
+    coffees = recommend_top3(
+        preferences,
+        recent_feedback=recent_feedback,
+        excluded_names=recommended_names
+    )
 
     if coffees:
         session["current_coffees"] = coffees
@@ -129,6 +158,13 @@ def recommend_after_feedback():
         )
 
     return redirect(url_for("home"))
+
+
+@app.route("/reset")
+def reset():
+    session.clear()
+    return redirect(url_for("home"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
