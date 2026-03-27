@@ -75,18 +75,17 @@ def recommend():
                 )
 
     elif choice == "6":
-        coffees = recommend_coffee(
+        results = recommend_coffee(
             coffees,
             preferences,
             recent_feedback=recent_feedback,
             excluded_names=recommended_names
         )
-        from app import get_recommend_reason
-        if coffees:
-            session["current_coffees"] = coffees
+        if results:
+            session["current_coffees"] = results
             session["current_coffee"] = None
 
-            for item in coffees:
+            for item in results:
                 if item["name"] not in recommended_names:
                     recommended_names.append(item["name"])
 
@@ -95,7 +94,7 @@ def recommend():
             return render_template(
                 "result.html",
                 coffee=None,
-                coffees=coffees,
+                coffees=results,
                 preferences=preferences
             )
 
