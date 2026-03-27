@@ -73,6 +73,27 @@ def recommend():
                     coffees=None,
                     preferences=preferences
                 )
+            else:
+                # 同口味已推薦完，自動改用 AI 推薦
+                results = recommend_top3(
+                    preferences,
+                    recent_feedback=recent_feedback,
+                    excluded_names=recommended_names
+                )
+                if results:
+                    for item in results:
+                        if item["name"] not in recommended_names:
+                            recommended_names.append(item["name"])
+                    session["recommended_names"] = recommended_names
+                    session["current_coffees"] = results
+                    session["current_coffee"] = None
+                    return render_template(
+                        "result.html",
+                        coffee=None,
+                        coffees=results,
+                        preferences=preferences,
+                        message="同口味已推薦完，改為 AI 幫你推薦其他選擇！"
+                    )
 
     elif choice == "6":
         results = recommend_coffee(
