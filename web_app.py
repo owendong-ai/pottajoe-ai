@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from app import get_recommend_reason, recommend_coffee, recommend_coffee_by_flavor, recommend_coffee_by_roast, recommend_top3, update_preferences
+from app import (get_recommend_reason, recommend_coffee,
+                 recommend_coffee_by_flavor, recommend_coffee_by_roast,
+                 recommend_coffees_by_flavor, recommend_coffees_by_roast,
+                 recommend_top3, update_preferences)
 from coffee_data import coffees
 from user_data import load_preferences, save_preferences
 
@@ -53,16 +56,18 @@ def recommend():
         session["last_roast"] = None
         session["recommended_names"] = []
 
-        coffee = recommend_coffee_by_flavor(flavor, [])
-        if coffee:
-            session["current_coffee"] = coffee
-            session["current_coffees"] = []
-            session["recommended_names"] = [coffee["name"]]
+        results = recommend_coffees_by_flavor(flavor, [])
+        if results:
+            new_excluded = [c["name"] for c in results]
+            session["recommended_names"] = new_excluded
+            has_more = bool(recommend_coffees_by_flavor(flavor, new_excluded, limit=1))
             return render_template(
                 "result.html",
-                coffee=coffee,
-                coffees=None,
-                preferences=preferences
+                coffee=None,
+                coffees=results,
+                preferences=preferences,
+                has_more=has_more,
+                page_title=f"☕ 為你推薦的{flavor}咖啡"
             )
 
     elif choice in roast_map:
@@ -71,16 +76,18 @@ def recommend():
         session["last_flavor"] = None
         session["recommended_names"] = []
 
-        coffee = recommend_coffee_by_roast(roast, [])
-        if coffee:
-            session["current_coffee"] = coffee
-            session["current_coffees"] = []
-            session["recommended_names"] = [coffee["name"]]
+        results = recommend_coffees_by_roast(roast, [])
+        if results:
+            new_excluded = [c["name"] for c in results]
+            session["recommended_names"] = new_excluded
+            has_more = bool(recommend_coffees_by_roast(roast, new_excluded, limit=1))
             return render_template(
                 "result.html",
-                coffee=coffee,
-                coffees=None,
-                preferences=preferences
+                coffee=None,
+                coffees=results,
+                preferences=preferences,
+                has_more=has_more,
+                page_title=f"☕ 為你推薦的{roast}咖啡"
             )
 
     elif choice == "5":
@@ -88,17 +95,19 @@ def recommend():
         last_roast = session.get("last_roast")
 
         if last_flavor:
-            coffee = recommend_coffee_by_flavor(last_flavor, recommended_names)
-            if coffee:
-                recommended_names.append(coffee["name"])
+            results = recommend_coffees_by_flavor(last_flavor, recommended_names)
+            if results:
+                for item in results:
+                    recommended_names.append(item["name"])
                 session["recommended_names"] = recommended_names
-                session["current_coffee"] = coffee
-                session["current_coffees"] = []
+                has_more = bool(recommend_coffees_by_flavor(last_flavor, recommended_names, limit=1))
                 return render_template(
                     "result.html",
-                    coffee=coffee,
-                    coffees=None,
-                    preferences=preferences
+                    coffee=None,
+                    coffees=results,
+                    preferences=preferences,
+                    has_more=has_more,
+                    page_title=f"☕ 為你推薦的{last_flavor}咖啡"
                 )
             else:
                 # 同口味已推薦完，自動改用 AI 推薦
@@ -112,28 +121,30 @@ def recommend():
                         if item["name"] not in recommended_names:
                             recommended_names.append(item["name"])
                     session["recommended_names"] = recommended_names
-                    session["current_coffees"] = results
-                    session["current_coffee"] = None
                     return render_template(
                         "result.html",
                         coffee=None,
                         coffees=results,
                         preferences=preferences,
-                        message="同口味已推薦完，改為 AI 幫你推薦其他選擇！"
+                        has_more=False,
+                        page_title="☕ AI 幫你推薦其他選擇",
+                        message="同口味已推薦完，改為 AI 幫你推薦！"
                     )
 
         elif last_roast:
-            coffee = recommend_coffee_by_roast(last_roast, recommended_names)
-            if coffee:
-                recommended_names.append(coffee["name"])
+            results = recommend_coffees_by_roast(last_roast, recommended_names)
+            if results:
+                for item in results:
+                    recommended_names.append(item["name"])
                 session["recommended_names"] = recommended_names
-                session["current_coffee"] = coffee
-                session["current_coffees"] = []
+                has_more = bool(recommend_coffees_by_roast(last_roast, recommended_names, limit=1))
                 return render_template(
                     "result.html",
-                    coffee=coffee,
-                    coffees=None,
-                    preferences=preferences
+                    coffee=None,
+                    coffees=results,
+                    preferences=preferences,
+                    has_more=has_more,
+                    page_title=f"☕ 為你推薦的{last_roast}咖啡"
                 )
             else:
                 # 同烘焙度已推薦完，自動改用 AI 推薦
@@ -147,14 +158,14 @@ def recommend():
                         if item["name"] not in recommended_names:
                             recommended_names.append(item["name"])
                     session["recommended_names"] = recommended_names
-                    session["current_coffees"] = results
-                    session["current_coffee"] = None
                     return render_template(
                         "result.html",
                         coffee=None,
                         coffees=results,
                         preferences=preferences,
-                        message="同烘焙度已推薦完，改為 AI 幫你推薦其他選擇！"
+                        has_more=False,
+                        page_title="☕ AI 幫你推薦其他選擇",
+                        message="同烘焙度已推薦完，改為 AI 幫你推薦！"
                     )
 
     elif choice == "6":
@@ -165,20 +176,17 @@ def recommend():
             excluded_names=recommended_names
         )
         if results:
-            session["current_coffees"] = results
-            session["current_coffee"] = None
-
             for item in results:
                 if item["name"] not in recommended_names:
                     recommended_names.append(item["name"])
-
             session["recommended_names"] = recommended_names
-
             return render_template(
                 "result.html",
                 coffee=None,
                 coffees=results,
-                preferences=preferences
+                preferences=preferences,
+                has_more=False,
+                page_title="☕ AI 推薦給你的咖啡"
             )
 
     return render_template(
@@ -186,6 +194,8 @@ def recommend():
         coffee=None,
         coffees=None,
         preferences=preferences,
+        has_more=False,
+        page_title="推薦結果",
         message="目前沒有可推薦的咖啡，請換個口味試試。"
     )
 
@@ -215,7 +225,6 @@ def feedback():
             "feedback": feedback_value
         })
 
-        # 只保留最近 10 筆
         session["recent_feedback"] = recent_feedback[-10:]
 
     return redirect(url_for("recommend_after_feedback"))
@@ -227,19 +236,21 @@ def recommend_after_feedback():
     recommended_names = session.get("recommended_names", [])
     recent_feedback = session.get("recent_feedback", [])
 
-    coffees = recommend_top3(
+    results = recommend_top3(
         preferences,
         recent_feedback=recent_feedback,
         excluded_names=recommended_names
     )
 
-    if coffees:
-        session["current_coffees"] = coffees
+    if results:
+        session["current_coffees"] = results
         return render_template(
             "result.html",
             coffee=None,
-            coffees=coffees,
-            preferences=preferences
+            coffees=results,
+            preferences=preferences,
+            has_more=False,
+            page_title="☕ AI 推薦給你的咖啡"
         )
 
     return redirect(url_for("home"))

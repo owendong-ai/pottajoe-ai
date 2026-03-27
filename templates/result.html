@@ -238,7 +238,10 @@
             </div>
 
         {% elif coffees %}
-            <h1 class="page-title">☕ AI 推薦給你的咖啡</h1>
+            <h1 class="page-title">{{ page_title or "☕ 推薦給你的咖啡" }}</h1>
+            {% if message %}
+            <p style="color:#8b5e3c; font-size:16px; margin-bottom:20px;">{{ message }}</p>
+            {% endif %}
 
             <div class="cards-grid">
                 {% for coffee in coffees %}
@@ -283,9 +286,17 @@
             </div>
         {% endif %}
 
-        <div style="display:flex; gap:20px; align-items:center; margin-top:16px; flex-wrap:wrap;">
+        <div style="display:flex; gap:20px; align-items:center; margin-top:24px; flex-wrap:wrap;">
             <a class="back-link" href="/">← 回首頁</a>
-            <a class="back-link" href="/reset" style="color:#a05c3b;">🔄 重新開始，換一輪推薦</a>
+            {% if has_more %}
+            <form method="post" action="/recommend" style="margin:0;">
+                <button type="submit" name="choice" value="5"
+                    style="background:linear-gradient(135deg,#6f4e37,#94694b);color:white;border:none;border-radius:14px;padding:12px 24px;font-size:18px;font-weight:700;cursor:pointer;">
+                    ➡️ 再看更多
+                </button>
+            </form>
+            {% endif %}
+            <a class="back-link" href="/reset" style="color:#a05c3b;">🔄 重新開始</a>
         </div>
     </div>
 </body>

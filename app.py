@@ -30,6 +30,20 @@ def recommend_coffee_by_roast(user_roast, excluded_names=None):
     return None
 
 
+def recommend_coffees_by_flavor(user_flavor, excluded_names=None, limit=3):
+    if excluded_names is None:
+        excluded_names = []
+    matched = [c for c in coffees if c["flavor"] == user_flavor and c["name"] not in excluded_names]
+    return matched[:limit]
+
+
+def recommend_coffees_by_roast(user_roast, excluded_names=None, limit=3):
+    if excluded_names is None:
+        excluded_names = []
+    matched = [c for c in coffees if c["roast"] == user_roast and c["name"] not in excluded_names]
+    return matched[:limit]
+
+
 def calculate_coffee_score(coffee, preferences, recent_feedback=None, excluded_names=None):
     score = 0
     reasons = []
