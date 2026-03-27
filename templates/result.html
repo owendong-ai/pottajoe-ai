@@ -216,6 +216,7 @@
                     <div class="label">AI 精選推薦</div>
                     <h2 class="coffee-name">{{ coffee["name"] }}</h2>
                     <p class="meta"><strong>風味：</strong>{{ coffee["flavor"] }}</p>
+                    <p class="meta"><strong>烘焙度：</strong>{{ coffee["roast"] }}</p>
                     <p class="meta"><strong>介紹：</strong>{{ coffee["description"] }}</p>
                     {% if coffee.reason %}
                     <p style="color:#8b5e3c; font-size:14px; margin-top:6px;">
@@ -226,6 +227,7 @@
                     <h3 class="feedback-title">你覺得這款咖啡如何？</h3>
                     <form method="post" action="/feedback">
                         <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
+                        <input type="hidden" name="roast" value="{{ coffee['roast'] }}">
                         <div class="feedback-row">
                             <button class="feedback-btn" type="submit" name="feedback" value="喜歡">👍 喜歡</button>
                             <button class="feedback-btn" type="submit" name="feedback" value="不喜歡">👎 不喜歡</button>
@@ -253,6 +255,7 @@
                         <div class="label">推薦候選</div>
                         <h2 class="card-name">{{ coffee["name"] }}</h2>
                         <p class="card-text"><strong>風味：</strong>{{ coffee["flavor"] }}</p>
+                        <p class="card-text"><strong>烘焙度：</strong>{{ coffee["roast"] }}</p>
                         <p class="card-text">{{ coffee["description"] }}</p>
                         {% if coffee.reason %}
                         <p class="card-text" style="color:#8b5e3c;">
@@ -263,6 +266,7 @@
 
                         <form method="post" action="/feedback">
                             <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
+                            <input type="hidden" name="roast" value="{{ coffee['roast'] }}">
                             <div class="feedback-row">
                                 <button class="feedback-btn" name="feedback" value="喜歡">👍 喜歡</button>
                                 <button class="feedback-btn" name="feedback" value="不喜歡">👎 不喜歡</button>

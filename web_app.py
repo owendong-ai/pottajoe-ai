@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from app import get_recommend_reason, recommend_coffee, recommend_coffee_by_flavor, recommend_top3, update_preferences
+from app import get_recommend_reason, recommend_coffee, recommend_coffee_by_flavor, recommend_coffee_by_roast, recommend_top3, update_preferences
 from coffee_data import coffees
 from user_data import load_preferences, save_preferences
 
@@ -41,9 +41,16 @@ def recommend():
         "4": "花香"
     }
 
+    roast_map = {
+        "7": "淺焙",
+        "8": "中焙",
+        "9": "深焙"
+    }
+
     if choice in flavor_map:
         flavor = flavor_map[choice]
         session["last_flavor"] = flavor
+        session["last_roast"] = None
         session["recommended_names"] = []
 
         coffee = recommend_coffee_by_flavor(flavor, [])
@@ -58,8 +65,28 @@ def recommend():
                 preferences=preferences
             )
 
+    elif choice in roast_map:
+        roast = roast_map[choice]
+        session["last_roast"] = roast
+        session["last_flavor"] = None
+        session["recommended_names"] = []
+
+        coffee = recommend_coffee_by_roast(roast, [])
+        if coffee:
+            session["current_coffee"] = coffee
+            session["current_coffees"] = []
+            session["recommended_names"] = [coffee["name"]]
+            return render_template(
+                "result.html",
+                coffee=coffee,
+                coffees=None,
+                preferences=preferences
+            )
+
     elif choice == "5":
         last_flavor = session.get("last_flavor")
+        last_roast = session.get("last_roast")
+
         if last_flavor:
             coffee = recommend_coffee_by_flavor(last_flavor, recommended_names)
             if coffee:
@@ -93,6 +120,41 @@ def recommend():
                         coffees=results,
                         preferences=preferences,
                         message="同口味已推薦完，改為 AI 幫你推薦其他選擇！"
+                    )
+
+        elif last_roast:
+            coffee = recommend_coffee_by_roast(last_roast, recommended_names)
+            if coffee:
+                recommended_names.append(coffee["name"])
+                session["recommended_names"] = recommended_names
+                session["current_coffee"] = coffee
+                session["current_coffees"] = []
+                return render_template(
+                    "result.html",
+                    coffee=coffee,
+                    coffees=None,
+                    preferences=preferences
+                )
+            else:
+                # 同烘焙度已推薦完，自動改用 AI 推薦
+                results = recommend_top3(
+                    preferences,
+                    recent_feedback=recent_feedback,
+                    excluded_names=recommended_names
+                )
+                if results:
+                    for item in results:
+                        if item["name"] not in recommended_names:
+                            recommended_names.append(item["name"])
+                    session["recommended_names"] = recommended_names
+                    session["current_coffees"] = results
+                    session["current_coffee"] = None
+                    return render_template(
+                        "result.html",
+                        coffee=None,
+                        coffees=results,
+                        preferences=preferences,
+                        message="同烘焙度已推薦完，改為 AI 幫你推薦其他選擇！"
                     )
 
     elif choice == "6":
@@ -132,6 +194,7 @@ def recommend():
 def feedback():
     feedback_value = request.form.get("feedback")
     flavor = request.form.get("flavor")
+    roast = request.form.get("roast")
 
     preferences = load_preferences()
 
@@ -140,8 +203,11 @@ def feedback():
 
     recent_feedback = session["recent_feedback"]
 
-    if flavor and feedback_value in ["喜歡", "不喜歡", "略過"]:
-        update_preferences(preferences, flavor, feedback_value)
+    if feedback_value in ["喜歡", "不喜歡", "略過"]:
+        if flavor:
+            update_preferences(preferences, flavor, feedback_value)
+        if roast:
+            update_preferences(preferences, roast, feedback_value)
         save_preferences(preferences)
 
         recent_feedback.append({

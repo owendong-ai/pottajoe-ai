@@ -125,6 +125,18 @@
             text-decoration: underline;
         }
 
+        .roast-btn {
+            line-height: 1.4;
+        }
+
+        .roast-desc {
+            display: block;
+            font-size: 14px;
+            font-weight: 400;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 34px;
@@ -178,9 +190,28 @@
         </div>
 
         <div class="section-card">
+            <h2 class="section-title">或選擇烘焙度</h2>
+
+            <div class="button-grid">
+                <form class="menu-form" method="post" action="/recommend">
+                    <button class="menu-btn roast-btn" type="submit" name="choice" value="7">🌱 淺焙<br><span class="roast-desc">果香・花香・清爽酸感</span></button>
+                </form>
+
+                <form class="menu-form" method="post" action="/recommend">
+                    <button class="menu-btn roast-btn" type="submit" name="choice" value="8">☕ 中焙<br><span class="roast-desc">平衡・溫和・層次豐富</span></button>
+                </form>
+
+                <form class="menu-form" method="post" action="/recommend">
+                    <button class="menu-btn roast-btn" type="submit" name="choice" value="9">🔥 深焙<br><span class="roast-desc">濃烈・苦甜・焦糖香氣</span></button>
+                </form>
+            </div>
+        </div>
+
+        <div class="section-card">
             <h2 class="section-title">目前 AI 學到的偏好分數</h2>
 
-            <div class="score-grid">
+            <p style="margin:0 0 16px; color:#8b684f; font-size:16px;">口味偏好</p>
+            <div class="score-grid" style="margin-bottom:20px;">
                 <div class="score-item">
                     <div class="score-label">濃郁</div>
                     <div class="score-value">{{ preferences["濃郁"] }}</div>
@@ -196,6 +227,22 @@
                 <div class="score-item">
                     <div class="score-label">花香</div>
                     <div class="score-value">{{ preferences["花香"] }}</div>
+                </div>
+            </div>
+
+            <p style="margin:0 0 16px; color:#8b684f; font-size:16px;">烘焙度偏好</p>
+            <div class="score-grid">
+                <div class="score-item">
+                    <div class="score-label">🌱 淺焙</div>
+                    <div class="score-value">{{ preferences["淺焙"] }}</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">☕ 中焙</div>
+                    <div class="score-value">{{ preferences["中焙"] }}</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">🔥 深焙</div>
+                    <div class="score-value">{{ preferences["深焙"] }}</div>
                 </div>
             </div>
         </div>

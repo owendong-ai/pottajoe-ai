@@ -15,19 +15,42 @@ def recommend_coffee_by_flavor(user_flavor, excluded_names=None):
     return None
 
 
+def recommend_coffee_by_roast(user_roast, excluded_names=None):
+    if excluded_names is None:
+        excluded_names = []
+
+    matched = []
+    for coffee in coffees:
+        if coffee["roast"] == user_roast and coffee["name"] not in excluded_names:
+            matched.append(coffee)
+
+    if matched:
+        return matched[0]
+
+    return None
+
+
 def calculate_coffee_score(coffee, preferences, recent_feedback=None, excluded_names=None):
     score = 0
     reasons = []
 
-    if coffee["flavor"] in preferences:
-        score += 3
-        reasons.append(f"符合你喜歡的「{coffee['flavor']}」")
+    flavor_score = preferences.get(coffee["flavor"], 0)
+    score += flavor_score + 3
+    if flavor_score > 0:
+        reasons.append(f"符合你喜歡的「{coffee['flavor']}」口味")
+
+    roast = coffee.get("roast", "")
+    roast_score = preferences.get(roast, 0)
+    score += roast_score
+    if roast_score > 0:
+        reasons.append(f"符合你喜歡的「{roast}」烘焙度")
 
     if recent_feedback:
         score += 1
         reasons.append("根據你最近的選擇調整")
 
-    return score, reasons   # ⭐⭐⭐ 重點在這
+    return score, reasons
+
 
 def get_recommend_reason(coffee, preferences, recent_feedback):
     flavor = coffee["flavor"]
@@ -48,6 +71,7 @@ def get_recommend_reason(coffee, preferences, recent_feedback):
 
     return f"推薦你嘗試「{flavor}」風味"
 
+
 def recommend_coffee(coffees, preferences, recent_feedback, excluded_names):
     scored_coffees = []
 
@@ -61,7 +85,6 @@ def recommend_coffee(coffees, preferences, recent_feedback, excluded_names):
 
         scored_coffees.append((coffee, score, reasons))
 
-    # 排序（很重要🔥）
     scored_coffees.sort(key=lambda x: x[1], reverse=True)
 
     results = []
@@ -72,14 +95,14 @@ def recommend_coffee(coffees, preferences, recent_feedback, excluded_names):
             coffee_copy["reason"] = reasons
             results.append(coffee_copy)
 
-    return results[:3]   # ✅ 一定要在這裡
+    return results[:3]
 
 
-def update_preferences(preferences, flavor, feedback):
+def update_preferences(preferences, key, feedback):
     if feedback == "喜歡":
-        preferences[flavor] = preferences.get(flavor, 0) + 1
+        preferences[key] = preferences.get(key, 0) + 1
     elif feedback == "不喜歡":
-        preferences[flavor] = preferences.get(flavor, 0) - 1
+        preferences[key] = preferences.get(key, 0) - 1
 
 
 def recommend_top3(preferences, recent_feedback=None, excluded_names=None):

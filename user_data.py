@@ -1,7 +1,6 @@
 import json
 import os
 import psycopg2
-from psycopg2.extras import RealDictCursor
 
 FILE_NAME = "preferences.json"
 
@@ -9,7 +8,10 @@ DEFAULT_PREFERENCES = {
     "濃郁": 0,
     "果香": 0,
     "堅果": 0,
-    "花香": 0
+    "花香": 0,
+    "淺焙": 0,
+    "中焙": 0,
+    "深焙": 0
 }
 
 def get_db_connection():
