@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from app import get_recommend_reason, recommend_coffee, recommend_coffee_by_flavor, recommend_top3, update_preferences
+from coffee_data import coffees
 from user_data import load_preferences, save_preferences
 
 app = Flask(__name__)
@@ -31,9 +32,6 @@ def recommend():
         session["recent_feedback"] = []
 
     recommended_names = session["recommended_names"]
-    if "recent_feedback" not in session:
-        session["recent_feedback"] = []
-
     recent_feedback = session["recent_feedback"]
 
     flavor_map = {

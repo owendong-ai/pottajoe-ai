@@ -37,9 +37,9 @@ def ask_rating(coffee_name):
 
 def update_preferences(preferences, flavor, feedback):
     if feedback == "喜歡":
-        preferences[flavor] += 1
+        preferences[flavor] = preferences.get(flavor, 0) + 1
     elif feedback == "不喜歡":
-        preferences[flavor] -= 1
+        preferences[flavor] = preferences.get(flavor, 0) - 1
 
 def show_preferences(preferences):
     print("\n目前 AI 學到的你的偏好分數：")

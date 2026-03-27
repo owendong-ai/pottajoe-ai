@@ -1,5 +1,3 @@
-from unittest import result
-
 from coffee_data import coffees
 
 def recommend_coffee_by_flavor(user_flavor, excluded_names=None):
@@ -79,6 +77,23 @@ def recommend_coffee(coffees, preferences, recent_feedback, excluded_names):
 
 def update_preferences(preferences, flavor, feedback):
     if feedback == "喜歡":
-        preferences[flavor] += 1
+        preferences[flavor] = preferences.get(flavor, 0) + 1
     elif feedback == "不喜歡":
-        preferences[flavor] -= 1
+        preferences[flavor] = preferences.get(flavor, 0) - 1
+
+
+def recommend_top3(preferences, recent_feedback=None, excluded_names=None):
+    if recent_feedback is None:
+        recent_feedback = []
+    if excluded_names is None:
+        excluded_names = []
+    return recommend_coffee(coffees, preferences, recent_feedback, excluded_names)
+
+
+def recommend_by_preferences(preferences, excluded_names=None):
+    if excluded_names is None:
+        excluded_names = []
+    results = recommend_coffee(coffees, preferences, [], excluded_names)
+    if results:
+        return results[0]
+    return None
