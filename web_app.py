@@ -168,6 +168,28 @@ def recommend():
                         message="同烘焙度已推薦完，改為 AI 幫你推薦！"
                     )
 
+        else:
+            # 從 AI 推薦來的，繼續用 AI 推薦下一組
+            results = recommend_top3(
+                preferences,
+                recent_feedback=recent_feedback,
+                excluded_names=recommended_names
+            )
+            if results:
+                for item in results:
+                    if item["name"] not in recommended_names:
+                        recommended_names.append(item["name"])
+                session["recommended_names"] = recommended_names
+                has_more = len(recommended_names) < len(coffees)
+                return render_template(
+                    "result.html",
+                    coffee=None,
+                    coffees=results,
+                    preferences=preferences,
+                    has_more=has_more,
+                    page_title="☕ AI 為你推薦下一組"
+                )
+
     elif choice == "6":
         results = recommend_coffee(
             coffees,

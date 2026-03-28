@@ -218,12 +218,6 @@
                     <p class="meta"><strong>風味：</strong>{{ coffee["flavor"] }}</p>
                     <p class="meta"><strong>烘焙度：</strong>{{ coffee["roast"] }}</p>
                     <p class="meta"><strong>介紹：</strong>{{ coffee["description"] }}</p>
-                    {% if coffee.reason %}
-                    <p style="color:#8b5e3c; font-size:14px; margin-top:6px;">
-                        🔥 推薦原因：
-                        {{ coffee.reason | join('，') }}
-                    </p>
-                    {% endif %}
                     <h3 class="feedback-title">你覺得這款咖啡如何？</h3>
                     <form method="post" action="/feedback">
                         <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
@@ -231,7 +225,7 @@
                         <div class="feedback-row">
                             <button class="feedback-btn" type="submit" name="feedback" value="喜歡">👍 喜歡</button>
                             <button class="feedback-btn" type="submit" name="feedback" value="不喜歡">👎 不喜歡</button>
-                            <button class="feedback-btn" type="submit" name="feedback" value="略過">⏭ 略過</button>
+                            <button class="feedback-btn" type="submit" name="feedback" value="略過">🤔 還好</button>
                         </div>
                     </form>
                 </div>
@@ -260,12 +254,6 @@
                         <p class="card-text"><strong>風味：</strong>{{ coffee["flavor"] }}</p>
                         <p class="card-text"><strong>烘焙度：</strong>{{ coffee["roast"] }}</p>
                         <p class="card-text">{{ coffee["description"] }}</p>
-                        {% if coffee.reason %}
-                        <p class="card-text" style="color:#8b5e3c;">
-                            🔥 推薦原因：
-                            {{ coffee.reason | join('，') }}
-                        </p>
-                        {% endif %}
 
                         <form method="post" action="/feedback">
                             <input type="hidden" name="flavor" value="{{ coffee['flavor'] }}">
@@ -273,7 +261,7 @@
                             <div class="feedback-row">
                                 <button class="feedback-btn" name="feedback" value="喜歡">👍 喜歡</button>
                                 <button class="feedback-btn" name="feedback" value="不喜歡">👎 不喜歡</button>
-                                <button class="feedback-btn" name="feedback" value="略過">⏭ 略過</button>
+                                <button class="feedback-btn" name="feedback" value="略過">🤔 還好</button>
                             </div>
                         </form>
                     </div>
@@ -296,7 +284,12 @@
                 </button>
             </form>
             {% endif %}
-            <a class="back-link" href="/reset" style="color:#a05c3b;">🔄 重新開始</a>
+            <form method="post" action="/recommend" style="margin:0;">
+                <button type="submit" name="choice" value="5"
+                    style="background:linear-gradient(135deg,#a05c3b,#c47d52);color:white;border:none;border-radius:14px;padding:12px 24px;font-size:18px;font-weight:700;cursor:pointer;">
+                    下一頁 →
+                </button>
+            </form>
         </div>
     </div>
 </body>
