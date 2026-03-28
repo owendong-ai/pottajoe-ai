@@ -258,7 +258,32 @@ def recommend_after_feedback():
 
 @app.route("/reset")
 def reset():
-    session.clear()
+    session.pop("recommended_names", None)
+    session.pop("last_flavor", None)
+    session.pop("last_roast", None)
+    session.pop("recent_feedback", None)
+
+    preferences = load_preferences()
+    recent_feedback = []
+    recommended_names = []
+
+    results = recommend_top3(
+        preferences,
+        recent_feedback=recent_feedback,
+        excluded_names=recommended_names
+    )
+    if results:
+        session["recommended_names"] = [c["name"] for c in results]
+        session["recent_feedback"] = []
+        return render_template(
+            "result.html",
+            coffee=None,
+            coffees=results,
+            preferences=preferences,
+            has_more=False,
+            page_title="☕ 換一輪！為你重新推薦"
+        )
+
     return redirect(url_for("home"))
 
 

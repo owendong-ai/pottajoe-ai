@@ -5,7 +5,10 @@
       "Bash(cp \"E:\\\\咖啡圖片\\\\Premier-Pour-pouch_3.jpg\" \"E:\\\\PythonProjects\\\\PottaJoe-AI\\\\static\\\\images\\\\mocha.jpg\")",
       "Bash(cp \"E:\\\\咖啡圖片\\\\Premier-Pour-pouch_SingleHorizonta10.jpg\" \"E:\\\\PythonProjects\\\\PottaJoe-AI\\\\static\\\\images\\\\black_gold.jpg\")",
       "Bash(cp \"E:\\\\咖啡圖片\\\\Premier-Pour-pouch_SingleHorizonta2.jpg\" \"E:\\\\PythonProjects\\\\PottaJoe-AI\\\\static\\\\images\\\\ethiopia.jpg\")",
-      "Bash(cp \"E:\\\\咖啡圖片\\\\Premier-Pour-pouch_SingleHorizonta3.jpg\" \"E:\\\\PythonProjects\\\\PottaJoe-AI\\\\static\\\\images\\\\kenya.jpg\")"
+      "Bash(cp \"E:\\\\咖啡圖片\\\\Premier-Pour-pouch_SingleHorizonta3.jpg\" \"E:\\\\PythonProjects\\\\PottaJoe-AI\\\\static\\\\images\\\\kenya.jpg\")",
+      "Bash(curl --ftp-ssl -u \"u828728117.claudehelper:>H8sgJFF?*qWhKl3\" \"ftp://ftp.pottajoe.com/\" --list-only)",
+      "Bash(curl -k --ftp-ssl -u \"u828728117.claudehelper:>H8sgJFF?*qWhKl3\" \"ftp://ftp.pottajoe.com/\" --list-only)",
+      "Bash(curl -k -u \"u828728117.claudehelper:>H8sgJFF?*qWhKl3\" \"ftp://ftp.pottajoe.com/\" --list-only)"
     ]
   }
 }
